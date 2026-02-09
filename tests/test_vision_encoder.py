@@ -126,3 +126,29 @@ class TestVisionEncoderInvariants:
         #     
         #     assert torch.allclose(batched_output, sequential_output, atol=1e-5)
         pass
+
+class TestPatchEmbedding:
+    """
+    Test the patch embedding component specifically
+    """
+    def test_patch_count_calculation(self):
+        """
+        Verify patch count calculation for different configurations
+        """
+        test_cases = [
+            (256, 16, 256),   # (image_size, patch_size, expected_patches)
+            (224, 16, 196),
+            (384, 16, 576),
+        ]
+        
+        for img_size, patch_size, expected_patches in test_cases:
+            patches_h = img_size // patch_size
+            patches_w = img_size // patch_size
+            num_patches = patches_h * patches_w
+            
+            assert num_patches == expected_patches, \
+                f"For {img_size}x{img_size} with patch {patch_size}, " \
+                f"expected {expected_patches} patches, got {num_patches}"
+
+if __name__ == "__main__":
+    pytest.main([__file__, "-v"])
